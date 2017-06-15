@@ -1,0 +1,385 @@
+<html>
+<head>
+	<title>Roguelike</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+	<style type="text/css">
+	body{
+		margin: 0;
+		padding: 0;
+		background-color: blue;
+	}
+    canvas{
+		margin: auto;
+		padding: 0;
+		display: block;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		
+		border: 2px solid blue;
+
+	}
+
+	div{
+		text-align: center;
+		margin: 0 auto;
+	}
+	
+
+	</style>
+
+
+</head>
+<body>
+
+	<div>
+		<span>Time left : </span>
+		<span id="time"></span>
+		<span>   ||  Points : </span>
+		<span id="points"> 00</span>
+		<span>   ||  Level : </span>
+		<span id="level"> 1</span>
+	</div>
+	<script type="text/javascript">
+		var map = [];
+		var xValue=0;
+		var yValue=0;
+		var points =0;
+		var timePoints=0;
+		var object;
+		var myVar;
+		var direction;
+		var level =1;
+		var width=40, length=40;
+		var moveCount=0;
+		var horizontalDemons = [];
+		var playerSprite= document.createElement("img");
+		playerSprite.src="playerSprite.png";
+		var demonsMove; 
+		var shownWidth =10;
+		var shownLength=10;
+		
+		function CanvasDisplay(){
+			this.canvas = document.createElement("canvas");
+			this.canvas.width = "500";
+			this.canvas.height= "500";
+			this.context = this.canvas.getContext("2d");
+			document.body.appendChild(this.canvas);
+			this.flipPlayer= false;
+			this.drawFrame();
+		}
+
+	
+		
+
+		CanvasDisplay.prototype.clear = function(){
+			this.canvas.parentNode.removeChild(this.canvas);
+		};
+
+		CanvasDisplay.prototype.drawFrame= function(){
+			this.clearDisplay();
+			this.drawBackground();
+			this.drawPlayer();
+		};
+
+		CanvasDisplay.prototype.clearDisplay = function(){
+			this.context.fillStyle = "blue";
+  			this.context.fillRect(0, 0,
+                   this.canvas.width, this.canvas.height);
+		};
+
+		CanvasDisplay.prototype.direction= function(){
+			var dirNum;
+			switch(direction){
+				case "down"  : dirNum=0;
+							    break;
+				case "left"  : dirNum=1;
+								break;
+				case "right" : dirNum=2;
+								break;
+				case "up"    : dirNum=3;
+								break;
+
+			}
+			return dirNum;
+		}
+
+		CanvasDisplay.prototype.drawPlayer= function(){
+
+			var dirNum = this.direction();
+			moveCount++;
+			moveCount%=4;
+			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,50,50);
+		};
+
+		CanvasDisplay.prototype.drawPlayerStatic = function(){
+			var dirNum = this.direction();
+			
+			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,50,50);
+		}
+
+
+
+		CanvasDisplay.prototype.drawBackground= function(){
+			var p=0;
+			var q=0;
+			for(var j=xValue-shownLength/2;j<xValue+shownLength/2;j++,q++){
+				p=0;
+				for(var i=yValue-shownWidth/2;i<yValue+shownWidth/2;i++,p++){
+
+					if(i<0||i>width-1||j<0||j>length-1){
+						this.context.fillStyle="blue";
+					}
+					else{
+						if(map[j][i]==1){
+							this.context.fillStyle="white";
+						}
+						else if(map[j][i]==0){
+							this.context.fillStyle="black";
+
+						}
+						else if(map[j][i]==2){
+							this.context.fillStyle="green";
+						}
+						else if(map[j][i]==3){
+							this.context.fillStyle="yellow";
+						}
+						else if(map[j][i]==-1){
+							this.context.fillStyle="red";
+						}
+						if(j==xValue&&i==yValue){
+							if(map[j][i]==3){
+								map[j][i]=1;
+								this.context.fillStyle="white";
+								updatePoint(100);
+							}
+						}
+					}
+					this.context.fillRect(p*this.canvas.width/10,q*this.canvas.height/10,(p+1)*this.canvas.width/10,(q+1)*this.canvas.height/10);
+				}
+			}
+		}
+
+		function move(){
+			demonsMove = setInterval(function(){
+				for (var i = 0; i < horizontalDemons.length; i++) {
+					var x= horizontalDemons[i].x;
+					var y= horizontalDemons[i].y;
+					var dir = horizontalDemons[i].dir;
+					if(dir==1){
+						if(y<width-1&&map[x][y+1]==1){
+							map[x][y]=1;
+							map[x][y+1]=-1;
+							horizontalDemons[i].y+=1;
+						}
+						else{
+							horizontalDemons[i].dir=-1;
+						}
+
+					}
+					else if(dir==-1){
+						if(y>0&&map[x][y-1]==1){
+							map[x][y]=1;
+							map[x][y-1]=-1;
+							horizontalDemons[i].y-=1;
+						}
+						else{
+							horizontalDemons[i].dir=1;
+						}
+					}
+				};
+				object.drawBackground();
+				object.drawPlayerStatic();
+			}, 500);
+		}
+
+		function horizontalCorridor(i){
+			var demon = { x:0 , y:0, dir:1};
+			var demon2= { x:0 , y:0, dir:1};
+			if(Math.random()>0.5){
+					for(var p=0;p<=width/4;p++){
+							map[i+1][p]=1;
+					};
+					for(p=width/4;p<=width/2;p++){
+							map[i+2][p]=1;
+					};
+					map[i+2][width/4]=-1;
+					demon.x=i+2;
+					demon.y=width/4;
+					demon.dir=1;
+					horizontalDemons.push(demon);
+					for(;p<=width*3/4;p++){
+							map[i][p]=1;
+					};
+					for(p=width*3/4;p<width;p++){
+							map[i+1][p]=1;
+					};
+					map[i+1][width*3/4]=-1;
+					demon2.x=i+1;
+					demon2.y=width*3/4;
+					demon2.dir=1;
+					horizontalDemons.push(demon2);
+
+				}
+				else{
+					for(var p=0;p<=width/4;p++){
+							map[i+1][p]=1;
+					};
+					map[i+1][1]=-1;
+					demon.x=i+1;
+					demon.y=1;
+					demon.dir=1;
+					horizontalDemons.push(demon);
+					for(p=width/4;p<=width/2;p++){
+							map[i][p]=1;
+					};
+					for(;p<=width*3/4;p++){
+							map[i+1][p]=1;
+					};
+					map[i+1][width/2+1]=-1;
+					demon2.x=i+1;
+					demon2.y=width/2+1;
+					demon2.dir=1;
+					horizontalDemons.push(demon2);
+					for(p=width*3/4;p<width;p++){
+							map[i+2][p]=1;
+					};
+				}
+		}
+		
+
+		function assignMap(){
+			map=[];
+			for (var i = 0; i < length; i++) {
+				map[i]=[];
+				for(var j=0;j<width;j++){
+					map[i][j]=0;
+				}
+			};
+			var x;
+			var y;
+			var max;
+
+			for (var i = 0; i < length; i++) {
+				max=0;
+				for(var j=0;j<width;j++){
+					x= Math.floor(Math.random()*3+3);
+					y= Math.floor(Math.random()*3+3);
+					if((j+x<width)&&(i+y<length)){
+						if(max<y)
+							max=y;
+						for(var p=i;p<i+y;p++){
+							for(var q=j;q<j+x;q++){
+								map[p][q]=1;
+								if(Math.random()>0.8)
+									map[p][q]=3;
+							};
+						};
+						var roomDistance=Math.random();
+						if(roomDistance<0.34)
+							j+=x;
+						else if(roomDistance<0.67)
+							j+=(x+1);
+						else
+							j+=(x+2);
+					}
+
+				};
+				horizontalCorridor(i);
+				i+=max;
+			};
+			for (var i = 0; i <length; i++) {
+				map[i][0]=1;
+				map[i][width-1]=1;
+			};
+			map[length-1][width-2]=2;
+			object = new CanvasDisplay();
+		}
+
+		document.onkeydown = function(e){
+			e=e|| window.event;
+			direction;
+			switch(e.keyCode){
+				case 37   : if(yValue>0&&map[xValue][yValue-1]!=0)
+								yValue--;
+							direction="left";
+							break;
+				case 38   : if(xValue>0&&map[xValue-1][yValue]!=0)
+								xValue--;
+							direction="up";
+							break;
+				case 39   : if(yValue<length-1&&map[xValue][yValue+1]!=0)
+								yValue++;
+							direction="right";
+							break;
+				case 40   : if(xValue<width-1&&map[xValue+1][yValue]!=0)
+								xValue++;
+							direction="down";
+							break;
+			}
+			if(map[xValue][yValue]==2){
+				clearInterval(myVar);
+				updatePoint(timePoints);
+				alert("You have won");
+				level++;
+				clearInterval(demonsMove);
+				onLoad();
+			}
+			else{
+
+				object.drawFrame();
+			}
+		
+		}	
+
+		function loser(){
+
+		}
+
+		function updatePoint(value){
+			points+=value;
+			document.getElementById("points").innerHTML = points.toString();
+		}
+
+		function onLoad(){
+			var fiveMinutes = 60*5,
+        	display = document.getElementById("time");
+        	xValue=0, yValue=0;
+        	timePoints=0;
+        	horizontalDemons=[];
+    		startTimer(fiveMinutes, display);
+			assignMap();
+			move();
+		}
+
+		function startTimer(duration, display) {
+		    var timer = duration, minutes, seconds;
+		    myVar = setInterval(function () {
+		        minutes = parseInt(timer / 60, 10);
+		        seconds = parseInt(timer % 60, 10);
+
+		        minutes = minutes < 10 ? "0" + minutes : minutes;
+		        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+		        display.innerHTML = minutes + ":" + seconds;
+		        timer--;
+		        timePoints= timer*10;
+
+		        if (timer < 0) {
+		     		updatePoint(-points);
+		     		points=0;
+		     		level=1;
+		           	clearInterval(myVar);
+		           	clearInterval(demonsMove);
+		           	onLoad(); 
+		        }
+		    }, 1000);
+		}
+
+		window.addEventListener("load", onLoad);
+	</script>
+
+</body>
+</html>
