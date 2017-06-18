@@ -2,33 +2,7 @@
 <head>
 	<title>Roguelike</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-	<style type="text/css">
-	body{
-		margin: 0;
-		padding: 0;
-		background-color: blue;
-	}
-    canvas{
-		margin: auto;
-		padding: 0;
-		display: block;
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		
-		border: 2px solid blue;
-
-	}
-
-	div{
-		text-align: center;
-		margin: 0 auto;
-	}
-	
-
-	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
 
 
 </head>
@@ -50,16 +24,20 @@
 		var timePoints=0;
 		var object;
 		var myVar;
-		var direction;
+		var direction="down";
 		var level =1;
 		var width=40, length=40;
 		var moveCount=0;
 		var horizontalDemons = [];
 		var playerSprite= document.createElement("img");
-		playerSprite.src="playerSprite.png";
+			playerSprite.src="playerSprite.png";
 		var demonsMove; 
 		var shownWidth =10;
 		var shownLength=10;
+		var backgroundSprite = document.createElement("img");
+			backgroundSprite.src="sprites.png";
+		var boosterWork =0;
+		var boosterSet=0;
 		
 		function CanvasDisplay(){
 			this.canvas = document.createElement("canvas");
@@ -70,9 +48,6 @@
 			this.flipPlayer= false;
 			this.drawFrame();
 		}
-
-	
-		
 
 		CanvasDisplay.prototype.clear = function(){
 			this.canvas.parentNode.removeChild(this.canvas);
@@ -111,53 +86,53 @@
 			var dirNum = this.direction();
 			moveCount++;
 			moveCount%=4;
-			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,50,50);
+			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,this.canvas.width/10,this.canvas.height/10);
 		};
 
 		CanvasDisplay.prototype.drawPlayerStatic = function(){
 			var dirNum = this.direction();
 			
-			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,50,50);
+			this.context.drawImage(playerSprite,moveCount*50,dirNum*50,50,50,shownWidth/2*this.canvas.width/10, shownLength/2*this.canvas.height/10,this.canvas.width/10,this.canvas.height/10);
 		}
 
-
+		CanvasDisplay.prototype.drawBackgroundSprite = function(x,y,p,q){
+			this.context.drawImage(backgroundSprite,x,y,25,25,p*this.canvas.width/10,q*this.canvas.height/10,this.canvas.width/10,this.canvas.height/10);
+		}
 
 		CanvasDisplay.prototype.drawBackground= function(){
 			var p=0;
 			var q=0;
+			var x=0,y=0;
 			for(var j=xValue-shownLength/2;j<xValue+shownLength/2;j++,q++){
 				p=0;
 				for(var i=yValue-shownWidth/2;i<yValue+shownWidth/2;i++,p++){
 
 					if(i<0||i>width-1||j<0||j>length-1){
-						this.context.fillStyle="blue";
+						x=50; y=25;
 					}
 					else{
 						if(map[j][i]==1){
-							this.context.fillStyle="white";
+							x=25; y=25;
 						}
 						else if(map[j][i]==0){
-							this.context.fillStyle="black";
-
+							x=50; y=50;
 						}
 						else if(map[j][i]==2){
-							this.context.fillStyle="green";
+							x=25; y=75;
 						}
 						else if(map[j][i]==3){
-							this.context.fillStyle="yellow";
+							x=50; y=175;
 						}
 						else if(map[j][i]==-1){
-							this.context.fillStyle="red";
+							x=50; y=125;
 						}
-						if(j==xValue&&i==yValue){
-							if(map[j][i]==3){
-								map[j][i]=1;
-								this.context.fillStyle="white";
-								updatePoint(100);
-							}
+						else if(map[j][i]==4){
+							x=0; y=175;
 						}
+						
 					}
-					this.context.fillRect(p*this.canvas.width/10,q*this.canvas.height/10,(p+1)*this.canvas.width/10,(q+1)*this.canvas.height/10);
+					this.drawBackgroundSprite(x,y,p,q);
+					
 				}
 			}
 		}
@@ -192,6 +167,10 @@
 				};
 				object.drawBackground();
 				object.drawPlayerStatic();
+				if(map[xValue][yValue]==-1&&boosterSet==0){
+					loser();
+					onLoad();
+				}
 			}, 500);
 		}
 
@@ -249,6 +228,22 @@
 				}
 		}
 		
+		function verticalCorridor(){
+			for (var i = 0; i <length; i++) {
+				map[i][0]=1;
+				map[i][width-1]=1;
+			};
+			for (var i = 0; i < length/2; i++) {
+				map[i][width/4]=1;
+			};
+			var booster = Math.ceil(Math.random()*(length/2));
+			map[booster][width/4]=4;
+			for (; i < length-2; i++) {
+				map[i][width*3/4]=1;
+			};
+			var booster1 = Math.ceil(Math.random()*(length/2)+ length/2 -2);
+			map[booster1][width*3/4]=4;
+		}
 
 		function assignMap(){
 			map=[];
@@ -261,7 +256,6 @@
 			var x;
 			var y;
 			var max;
-
 			for (var i = 0; i < length; i++) {
 				max=0;
 				for(var j=0;j<width;j++){
@@ -290,6 +284,8 @@
 				horizontalCorridor(i);
 				i+=max;
 			};
+
+			verticalCorridor();
 			for (var i = 0; i <length; i++) {
 				map[i][0]=1;
 				map[i][width-1]=1;
@@ -327,20 +323,54 @@
 				clearInterval(demonsMove);
 				onLoad();
 			}
-			else{
+			else if(map[xValue][yValue]==3){
+				map[xValue][yValue]=1;
+				updatePoint(100);
+				object.drawFrame();
+			}
+			else if(map[xValue][yValue]==4){
+				map[xValue][yValue]=1;
+				boosterBegin();
+				object.drawFrame();
 
+			}
+			else if(map[xValue][yValue]==-1&&boosterSet==0){
+				loser();
+				onLoad();
+			}
+			else{
 				object.drawFrame();
 			}
 		
 		}	
 
-		function loser(){
+		function boosterBegin(){
+			boosterSet=1;
+			boosterWork= setInterval(function(){
+				if(boosterSet==1){
+					boosterSet=0;
+				}
+				else{
+					clearInterval(boosterWork);
+				}
+			}, 20*1000);
+		}
 
+		function loser(){
+			alert("Feil. Back to square 1.")
+			clearInterval(myVar);
+			clearInterval(demonsMove);
+			level=1;
+			updatePoint(-points);
 		}
 
 		function updatePoint(value){
 			points+=value;
 			document.getElementById("points").innerHTML = points.toString();
+		}
+
+		function updateLevel(){
+			document.getElementById("level").innerHTML = level.toString();
 		}
 
 		function onLoad(){
@@ -349,6 +379,7 @@
         	xValue=0, yValue=0;
         	timePoints=0;
         	horizontalDemons=[];
+        	updateLevel();
     		startTimer(fiveMinutes, display);
 			assignMap();
 			move();
@@ -368,11 +399,7 @@
 		        timePoints= timer*10;
 
 		        if (timer < 0) {
-		     		updatePoint(-points);
-		     		points=0;
-		     		level=1;
-		           	clearInterval(myVar);
-		           	clearInterval(demonsMove);
+		     		loser();
 		           	onLoad(); 
 		        }
 		    }, 1000);
