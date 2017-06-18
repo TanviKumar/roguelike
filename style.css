@@ -1,0 +1,26 @@
+body{
+		margin: 0;
+		padding: 0;
+		background-color: black;
+	}
+    canvas{
+		margin: auto;
+		padding: 0;
+		display: block;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		border: 2px solid blue;
+	}
+
+	div{
+		text-align: center;
+		margin: 0 auto;
+	}
+	span{
+		text-decoration: bold;
+		font-size: 200%;
+		color: white;
+	}
