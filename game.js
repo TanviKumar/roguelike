@@ -3,7 +3,9 @@
 			this.playerObject= new Player();
 			this.canvasObject= new CanvasDisplay();
 			this.timerCount=0;
-			this.duration =300;
+			this.boosterCount=0;
+			this.boosterSet = false;
+			this.duration =240;
 
 		};
 
@@ -85,6 +87,9 @@
 		Game.prototype.updateFn = function(dt){
 			this.timerCount+=dt;
 			this.demontimerCount+=dt;
+			if(this.boosterSet==true){
+				this.boosterCount+=dt;
+			}
 			this.changePosition();
 
 			if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==2){
@@ -95,7 +100,7 @@
 				window.cancelAnimationFrame(myReq);
 				this.nextLevel();
 			}
-			else if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==-1){
+			else if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==-1&&this.boosterSet==false){
 				this.loser();
 				window.cancelAnimationFrame(myReq);
 				onLoad();
@@ -108,6 +113,7 @@
 			else if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==4){
 				this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]=1;
 				this.playerObject.updatePoint(500);
+				this.boosterSet=true;
 				this.timerCheck();
 			}
 			else
@@ -122,6 +128,10 @@
 			if(this.demontimerCount>0.5){
 				this.canvasObject.demonTimer();
 				this.demontimerCount=0;
+			}
+			if(this.boosterCount>20&&this.boosterSet==true){
+				this.boosterSet=false;
+				this.boosterCount=0;
 			}
 		}
 
