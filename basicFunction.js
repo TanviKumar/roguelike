@@ -7,6 +7,13 @@
 		var display = document.getElementById("time");
 		var last;
 		var now=0,dt;
+		
+		var music = new Audio("music.mp3")
+		music.addEventListener('ended', function() {
+    		this.currentTime = 0;
+   			this.play();
+		}, false);
+		music.play();
 
 		function timestamp(){
 			return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
