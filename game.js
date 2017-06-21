@@ -101,6 +101,8 @@
 				this.nextLevel();
 			}
 			else if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==-1&&this.boosterSet==false){
+				music.pause();
+				scream.play();
 				this.loser();
 				window.cancelAnimationFrame(myReq);
 				onLoad();
