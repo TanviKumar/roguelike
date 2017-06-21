@@ -1,8 +1,8 @@
 # Roguelike Game 
-<p> Made using HTML, CSS and JavaScript. In order to run this game, git clone and run the file roguelike.html on your browser.</p>
-### Instructions
-+ Use the arrow keys for player movement.
-+ Avoid the purple demons.
+Made using HTML, CSS and JavaScript. In order to run this game, git clone and run the file roguelike.html on your browser.
+## Instructions
+* Use the arrow keys for player movement.
+* Avoid the purple demons.
 + Collect the yellow flasks for 100 points
 + Blue flasks give you 500 points and let you run over demons for 20 seconds.
 + There are 3 levels to the game.
