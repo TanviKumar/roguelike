@@ -74,12 +74,14 @@ Game.prototype.loser = function(){
 Game.prototype.nextLevel = function(){
 	if(this.playerObject.level>3){
 		alert("Great Job! " + document.getElementById("points").innerHTML);
+		this.playerObject.updateLevel();
+		document.getElementById("points").innerHTML=00;
 		this.playerObject.level=1;
 		onLoad();
 	}
 	else{
 		alert("Next Level");
-		document.getElementById("level").innerHTML = this.playerObject.level;
+		this.playerObject.updateLevel();
 		onLoad();
 
 	}
@@ -96,7 +98,6 @@ Game.prototype.updateFn = function(dt){
 	if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==2){
 		this.playerObject.updatePoint(this.playerObject.timePoints);
 		this.playerObject.level++;
-		this.playerObject.updateLevel();
 		window.cancelAnimationFrame(myReq);
 		this.nextLevel();
 	}
