@@ -1,3 +1,4 @@
+//Global Variable declarations
 var playerSprite= document.createElement("img");
 	playerSprite.src="playerSprite.png";
 var backgroundSprite = document.createElement("img");
@@ -12,14 +13,15 @@ var scream = new Audio("scream.mp3");
 scream.addEventListener("ended", function(){
 	music.play();
 });
-
-var music = new Audio("music.mp3")
+//For the music
+var music = new Audio("music.mp3");
 music.addEventListener("ended", function() {
 this.currentTime = 0;
 	this.play();
 }, false);
 music.play();
 
+//Returns Time
 function timestamp(){
 	return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
 }
@@ -29,7 +31,8 @@ function onLoad(){
 	var gameObject = new Game();
 	gameObject.canvasObject.assignMap();
 	gameObject.playerObject.level = document.getElementById("level").innerHTML;
-	gameObject.duration = (5.5 - gameObject.playerObject.level*0.5)*60;
+	gameObject.playerObject.points = Number(document.getElementById("points").innerHTML);
+	gameObject.duration = (4.5 - gameObject.playerObject.level*0.5)*60;
 	gameObject.startLoop();
 
 }
