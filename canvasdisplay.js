@@ -28,44 +28,44 @@
                    this.canvas.width, this.canvas.height);
 		};
 
-		CanvasDisplay.prototype.drawBackgroundSprite = function(x,y,p,q){
-			this.context.drawImage(backgroundSprite,x,y,25,25,p*this.canvas.width/10,q*this.canvas.height/10,this.canvas.width/10,this.canvas.height/10);
+		CanvasDisplay.prototype.drawBackgroundSprite = function(imagex,imagey,canvasx,canvasy){
+			this.context.drawImage(backgroundSprite,imagex,imagey,25,25,canvasx*this.canvas.width/10,canvasy*this.canvas.height/10,this.canvas.width/10,this.canvas.height/10);
 		}
 
 		//draws background around player based on shown length and width
 		CanvasDisplay.prototype.drawBackground= function(){
-			var p=0;
-			var q=0;
-			var x=0,y=0;
-			for(var j=this.xValue-this.shownLength/2;j<this.xValue+this.shownLength/2;j++,q++){
-				p=0;
-				for(var i=this.yValue-this.shownWidth/2;i<this.yValue+this.shownWidth/2;i++,p++){
+			var canvasx=0;
+			var canvasy=0;
+			var imagex=0,imagey=0;
+			for(var j=this.xValue-this.shownLength/2;j<this.xValue+this.shownLength/2;j++,canvasy++){
+				canvasx=0;
+				for(var i=this.yValue-this.shownWidth/2;i<this.yValue+this.shownWidth/2;i++,canvasx++){
 
 					if(i<0||i>this.width-1||j<0||j>this.length-1){
-						x=50; y=25;
+						imagex=50; imagey=25;
 					}
 					else{
 						if(this.map[j][i]==1){
-							x=25; y=25;
+							imagex=25; imagey=25;
 						}
 						else if(this.map[j][i]==0){
-							x=50; y=50;
+							imagex=50; imagey=50;
 						}
 						else if(this.map[j][i]==2){
-							x=25; y=75;
+							imagex=25; imagey=75;
 						}
 						else if(this.map[j][i]==3){
-							x=50; y=175;
+							imagex=50; imagey=175;
 						}
 						else if(this.map[j][i]==-1){
-							x=50; y=125;
+							imagex=50; imagey=125;
 						}
 						else if(this.map[j][i]==4){
-							x=0; y=175;
+							imagex=0; imagey=175;
 						}
 						
 					}
-					this.drawBackgroundSprite(x,y,p,q);	
+					this.drawBackgroundSprite(imagex,imagey,canvasx,canvasy);	
 				}
 			}
 		};
