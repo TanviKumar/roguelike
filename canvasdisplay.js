@@ -222,5 +222,10 @@ CanvasDisplay.prototype.assignMap = function(){
 		this.map[i][0]=1;
 		this.map[i][this.width-1]=1;
 	};
-	this.map[this.length-1][this.width-2]=2;
+	if(Math.random()<0.3)
+		this.map[this.length-1][this.width-2]=2;
+	else if(Math.random()<0.5)
+		this.map[0][this.width-2]=2;
+	else
+		this.map[this.length-1][1]=2;
 }
