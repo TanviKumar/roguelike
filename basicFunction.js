@@ -8,8 +8,13 @@
 		var last;
 		var now=0,dt;
 		
+		var scream = new Audio("scream.mp3");
+		scream.addEventListener("ended", function(){
+			music.play();
+		});
+
 		var music = new Audio("music.mp3")
-		music.addEventListener('ended', function() {
+		music.addEventListener("ended", function() {
     		this.currentTime = 0;
    			this.play();
 		}, false);
