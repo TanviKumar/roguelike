@@ -67,6 +67,7 @@ Game.prototype.changePosition= function(){
 Game.prototype.loser = function(){
 	alert("Feil. Back to square 1.")
 	this.playerObject.level=1;
+	document.getElementById("level").innerHTML= this.playerObject.level;
 	this.playerObject.updatePoint(-this.playerObject.points);
 }
 
