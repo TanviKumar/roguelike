@@ -96,7 +96,6 @@ Game.prototype.updateFn = function(dt){
 	if(this.canvasObject.map[this.canvasObject.xValue][this.canvasObject.yValue]==2){
 		this.playerObject.updatePoint(this.playerObject.timePoints);
 		this.playerObject.level++;
-		level++;
 		this.playerObject.updateLevel();
 		window.cancelAnimationFrame(myReq);
 		this.nextLevel();
