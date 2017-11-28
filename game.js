@@ -74,9 +74,9 @@ Game.prototype.loser = function(){
 Game.prototype.nextLevel = function(){
 	if(this.playerObject.level>3){
 		alert("Great Job! " + document.getElementById("points").innerHTML);
+		this.playerObject.level=1;
 		this.playerObject.updateLevel();
 		document.getElementById("points").innerHTML=00;
-		this.playerObject.level=1;
 		onLoad();
 	}
 	else{
