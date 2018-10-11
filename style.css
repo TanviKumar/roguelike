@@ -13,8 +13,8 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		border: 2px solid blue;
-	}
+        border: 4px dotted #7fffd4;
+    }
 
 	div{
 		text-align: center;
